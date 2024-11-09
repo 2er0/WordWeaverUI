@@ -1,10 +1,12 @@
 import React from 'react';
-import { useGameStore } from '../store';
+import { User } from '../types';
 import { Trophy, Award, Medal } from 'lucide-react';
 
-export function RankingView() {
-  const { users } = useGameStore();
-  
+interface RankingViewProps {
+  users: User[];
+}
+
+export function RankingView({ users }: RankingViewProps) {
   const sortedUsers = [...users].sort((a, b) => b.score - a.score);
   
   const getRankIcon = (index: number) => {

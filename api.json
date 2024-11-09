@@ -1,0 +1,670 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WordWeaverBackend",
+    "description": "",
+    "license": {
+      "name": ""
+    },
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/admin/active": {
+      "get": {
+        "tags": [
+          "crate::admin_api"
+        ],
+        "operationId": "active_games_handler",
+        "responses": {
+          "200": {
+            "description": "Active games retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BaseStringDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to get active games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/available": {
+      "get": {
+        "tags": [
+          "crate::admin_api"
+        ],
+        "operationId": "available_games_handler",
+        "responses": {
+          "200": {
+            "description": "Available games retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to get games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/close": {
+      "post": {
+        "tags": [
+          "crate::admin_api"
+        ],
+        "operationId": "close_game_handler",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseStringDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Game closed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/new": {
+      "post": {
+        "tags": [
+          "crate::admin_api"
+        ],
+        "operationId": "new_game_handler",
+        "parameters": [
+          {
+            "name": "force",
+            "in": "query",
+            "description": "Force update if game already exists",
+            "required": false,
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Game saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Game already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to insert game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/start": {
+      "post": {
+        "tags": [
+          "crate::admin_api"
+        ],
+        "operationId": "start_game_handler",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BaseStringDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Game started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseStringDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No game found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/{game_id}/claim": {
+      "post": {
+        "tags": [
+          "crate::game_api"
+        ],
+        "operationId": "claim_gap_handler",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "description": "ID of the game",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GapClaimDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Gap claimed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Gap already claimed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/{game_id}/fill": {
+      "post": {
+        "tags": [
+          "crate::game_api"
+        ],
+        "operationId": "fill_gap_handler",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "description": "ID of the game",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GapFillDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Gap filled successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Gap not claimed or claimed by another user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/{game_id}/guess": {
+      "post": {
+        "tags": [
+          "crate::game_api"
+        ],
+        "operationId": "guess_gap_handler",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "description": "ID of the game",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuessesDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Guesses submitted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/{game_id}/join": {
+      "post": {
+        "tags": [
+          "crate::game_api"
+        ],
+        "operationId": "join_game_handler",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "description": "ID of the game",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User joined successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JoinResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BaseResponse": {
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "properties": {
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BaseStringDTO": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "GameDTO": {
+        "type": "object",
+        "required": [
+          "name",
+          "text_section"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text_section": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GapClaimDTO": {
+        "type": "object",
+        "required": [
+          "gap_id",
+          "token"
+        ],
+        "properties": {
+          "gap_id": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "GapFillDTO": {
+        "type": "object",
+        "required": [
+          "gap_id",
+          "token",
+          "content"
+        ],
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "gap_id": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "GuessDTO": {
+        "type": "object",
+        "required": [
+          "gap_id",
+          "token"
+        ],
+        "properties": {
+          "gap_id": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "GuessesDTO": {
+        "type": "object",
+        "required": [
+          "gap_id",
+          "token",
+          "guesses"
+        ],
+        "properties": {
+          "gap_id": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "guesses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuessDTO"
+            }
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "JoinResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "pre_gaps_text"
+        ],
+        "properties": {
+          "pre_gaps_text": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreGapTextDTO"
+            }
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PreGapTextDTO": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "gap_after"
+        ],
+        "properties": {
+          "gap_after": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "UserDTO": {
+        "type": "object",
+        "required": [
+          "username",
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

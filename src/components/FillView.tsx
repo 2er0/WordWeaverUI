@@ -1,14 +1,19 @@
-import React from 'react';
-import { useGameStore } from '../store';
+import React, { useState } from 'react';
+import { Gap } from '../types';
 
-export function FillView() {
-  const { gaps, currentUser, fillGap } = useGameStore();
-  const [input, setInput] = React.useState('');
-  const [selectedGap, setSelectedGap] = React.useState<string | null>(null);
+interface FillViewProps {
+  gaps: Gap[];
+  currentUser: string;
+  onFillGap: (gapId: string, value: string) => void;
+}
+
+export function FillView({ gaps, currentUser, onFillGap }: FillViewProps) {
+  const [input, setInput] = useState('');
+  const [selectedGap, setSelectedGap] = useState<string | null>(null);
 
   const handleFill = () => {
     if (selectedGap && input.trim()) {
-      fillGap(selectedGap, input.trim());
+      onFillGap(selectedGap, input.trim());
       setInput('');
       setSelectedGap(null);
     }
@@ -29,7 +34,7 @@ export function FillView() {
       
       <div className="prose lg:prose-xl">
         {gaps.map((gap, index) => {
-          const isFilledByCurrentUser = gap.filledBy === currentUser?.id;
+          const isFilledByCurrentUser = gap.filledBy === currentUser;
           const canFill = !gap.filledBy && !isFilledByCurrentUser;
           
           return (
