@@ -224,6 +224,7 @@
         "tags": [
           "crate::game_api"
         ],
+        "description": "Claim the gap in the game with the specified id and notifies all users about the claimed gap via websocket with the message {\"type\": \"gap_claimed\", \"gap_id\": gap_id}",
         "operationId": "claim_gap_handler",
         "parameters": [
           {
@@ -295,6 +296,7 @@
         "tags": [
           "crate::game_api"
         ],
+        "description": "Fill the gap in the game with the specified id and notifies all users about the filled gap via websocket with the message {\"type\": \"gap_filled\", \"gap_id\": gap_id}",
         "operationId": "fill_gap_handler",
         "parameters": [
           {
@@ -366,6 +368,7 @@
         "tags": [
           "crate::game_api"
         ],
+        "description": "Submit guesses about which gap is filled by which user in the game with the specified id and notifies all users about the guesses via websocket with the message {\"type\": \"guessed\", \"token\": \"token\"}",
         "operationId": "guess_gap_handler",
         "parameters": [
           {
@@ -427,6 +430,7 @@
         "tags": [
           "crate::game_api"
         ],
+        "description": "Join the game with the specified id and notifies all users about the new user via websocket with the message {\"type\": \"user_joined\", \"token\": \"token\"}",
         "operationId": "join_game_handler",
         "parameters": [
           {
@@ -653,14 +657,14 @@
       "UserDTO": {
         "type": "object",
         "required": [
-          "username",
+          "name",
           "token"
         ],
         "properties": {
           "token": {
             "type": "string"
           },
-          "username": {
+          "name": {
             "type": "string"
           }
         }

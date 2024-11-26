@@ -1,42 +1,63 @@
-import { useEffect, useRef, useCallback } from 'react';
-import { GameState } from '../lib/types';
+import {useEffect, useRef, useCallback} from 'react';
 
-export function useWebSocket(gameId: string, token: string, onMessage: (data: any) => void) {
-  const ws = useRef<WebSocket | null>(null);
+interface WebSocketMessage {
+    obj: 'auth' | 'user_joined' | 'change_view' |
+        'gap_claimed' | 'gap_filled' | 'guessed' | 'state_update';
+    payload?: any;
+}
 
-  const connect = useCallback(() => {
-    ws.current = new WebSocket(`/websocket/${gameId}/com`);
+export function useWebSocket(
+    joinGame: boolean,
+    gameId: string,
+    token: string,
+    onMessage: (message: WebSocketMessage) => void
+) {
+    const ws = useRef<WebSocket | null>(null);
 
-    ws.current.onopen = () => {
-      if (ws.current?.readyState === WebSocket.OPEN) {
-        ws.current.send(JSON.stringify({ type: 'auth', token }));
-      }
-    };
+    const connect = useCallback(() => {
+        ws.current = new WebSocket(`/websocket/${gameId}/com`);
 
-    ws.current.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        onMessage(data);
-      } catch (error) {
-        console.error('Failed to parse WebSocket message:', error);
-      }
-    };
+        ws.current.onopen = () => {
+            if (ws.current?.readyState === WebSocket.OPEN && token) {
+                ws.current.send(JSON.stringify({obj: 'auth', token: token}));
+            }
+        };
 
-    ws.current.onclose = () => {
-      setTimeout(connect, 1000);
-    };
-  }, [gameId, token, onMessage]);
+        ws.current.onmessage = (event) => {
+            try {
+                const message: WebSocketMessage = JSON.parse(event.data);
+                onMessage(message);
+            } catch (error) {
+                console.error('Failed to parse WebSocket message:', error);
+            }
+        };
 
-  const sendMessage = useCallback((message: object) => {
-    if (ws.current?.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify(message));
-    }
-  }, []);
+        ws.current.onclose = () => {
+            setTimeout(connect, 1000);
+        };
 
-  useEffect(() => {
-    connect();
-    return () => ws.current?.close();
-  }, [connect]);
+        ws.current.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            ws.current?.close();
+        };
+    }, [gameId, token, onMessage]);
 
-  return { sendMessage };
+    const sendMessage = useCallback((message: WebSocketMessage) => {
+        if (ws.current?.readyState === WebSocket.OPEN) {
+            ws.current.send(JSON.stringify(message));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (joinGame && gameId && token) {
+            connect();
+        }
+        return () => {
+            if (ws.current) {
+                ws.current.close();
+            }
+        };
+    }, [connect, gameId, token, joinGame]);
+
+    return {sendMessage};
 }

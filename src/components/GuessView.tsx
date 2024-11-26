@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Gap, User, Guess } from '../types';
 import { CheckCircle2, XCircle } from 'lucide-react';
