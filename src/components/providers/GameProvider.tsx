@@ -110,12 +110,16 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                     console.log('filled gaps:', response);
                     setGameState(prev => ({
                         ...prev,
-                        gaps: prev.gaps.map(gap =>
-                            // unsave TODO improve this
-                            response.gaps[gap.id] !== undefined ?
-                                {...gap, value: response.gaps[gap.id].value}
-                                : gap
-                        ),
+                        gaps: prev.gaps.map(gap => {
+                            // save filled gaps
+                            const b_gap = response.gaps
+                                .find((g: { gap_id: number, value: string }) => g.gap_id === gap.id);
+                            if (b_gap) {
+                                return {...gap, filled: true, value: b_gap.value}
+                            } else {
+                                return {...gap, filled: true, value: '...'}
+                            }
+                        }),
                         users: response.users.map((user: UserDTO) => userDTOconvert(user)),
                     }));
                 });
