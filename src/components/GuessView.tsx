@@ -1,21 +1,26 @@
 'use client';
 
-import React from 'react';
+import React, {useState} from 'react';
 import {useGame} from "@/components/providers/GameProvider.tsx";
 import {GuessBlock} from "@/components/GuessBlock.tsx";
 
 export function GuessView() {
-    const {gameState, currentUser} = useGame();
+    const {gameState, currentUser, submitGuesses} = useGame();
+    const [guesses, setGuesses] = useState<Record<number, string>>([]);
 
     const handleGuess = (gapId: number, userId: string) => {
         // TODO Implement me
         // save to state
         console.log('handleGuess', gapId, userId);
+        setGuesses({...guesses, [gapId]: userId});
     };
 
     const handleGuessSubmit = () => {
         // TODO Implement me
-        console.log('Submit Guess');
+        console.log('Submit Guess', guesses);
+        const guessArray = Object.entries(guesses)
+            .map(([gapId, userId]) => ({gapId: parseInt(gapId), userId}));
+        submitGuesses(guessArray);
     }
 
     return (
@@ -25,7 +30,7 @@ export function GuessView() {
             <div className="space-y-6">
                 {gameState.gaps.filter(gap => gap.value).map((gap) => {
                     return (
-                        <GuessBlock
+                        <GuessBlock key={gap.id}
                             currentUser={currentUser}
                             gap={gap}
                             users={gameState.users}
@@ -33,7 +38,6 @@ export function GuessView() {
                     )
                 })}
             </div>
-            (// TODO Add a button to submit the guess)
             <button
                 onClick={() => handleGuessSubmit()}
                 className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors"

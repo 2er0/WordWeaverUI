@@ -1,15 +1,13 @@
 'use client';
 
 import React from 'react';
-import { User } from '../types';
 import { Trophy, Award, Medal } from 'lucide-react';
+import {useGame} from "@/components/providers/GameProvider.tsx";
 
-interface RankingViewProps {
-  users: User[];
-}
-
-export function RankingView({ users }: RankingViewProps) {
-  const sortedUsers = [...users].sort((a, b) => b.score - a.score);
+export function RankingView() {
+  const { guessScores } = useGame();
+  const sortedUsers = [...guessScores]
+      .sort((a, b) => b.score - a.score);
   
   const getRankIcon = (index: number) => {
     switch (index) {
@@ -31,7 +29,7 @@ export function RankingView({ users }: RankingViewProps) {
       <div className="space-y-4">
         {sortedUsers.map((user, index) => (
           <div
-            key={user.id}
+            key={user.token}
             className="flex items-center justify-between bg-white p-4 rounded-lg shadow"
           >
             <div className="flex items-center gap-4">
@@ -40,7 +38,6 @@ export function RankingView({ users }: RankingViewProps) {
               </span>
               <div className="flex flex-col">
                 <span className="font-medium">{user.name}</span>
-                <span className="text-sm text-gray-500">Seat {user.seatNumber}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">

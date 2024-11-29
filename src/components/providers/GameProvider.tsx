@@ -1,9 +1,18 @@
 'use client';
 
 import React, {createContext, useContext, useState, useCallback, useEffect} from 'react';
-import {User, GameState, PreGapTextDTO, WebSocketMessage, UserDTO, RejoinPreGapTextDTO} from '@/lib/types';
+import {
+    User,
+    GameState,
+    PreGapTextDTO,
+    WebSocketMessage,
+    UserDTO,
+    RejoinPreGapTextDTO,
+    GuessScoreDTO
+} from '@/lib/types';
 import {api} from '@/lib/api';
 import {useWebSocket} from '@/hooks/useWebSocket';
+import {hasOwnProperty} from "tailwindcss";
 
 interface GameContextType {
     gameState: GameState;
@@ -15,7 +24,9 @@ interface GameContextType {
     claimedGap: number | null;
     claimGap: (gapId: number) => Promise<void>;
     fillGap: (gapId: number, content: string) => Promise<void>;
-    submitGuesses: (gapId: number, guesses: { gapId: number, userId: string }[]) => Promise<void>;
+    submitGuesses: (guesses: { gapId: number, userId: string }[]) => Promise<void>;
+    guessScores: { name: string, token: string, score: number }[];
+    setGuessScores: (scores: { name: string, token: string, score: number }[]) => void;
     showGetReady: boolean;
 }
 
@@ -42,6 +53,9 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
     // tryGapClaim placeholder
     const [claimedGap, setClaimedGap] = useState<number | null>(null);
+
+    // guessScores placeholder
+    const [guessScores, setGuessScores] = useState<{ name: string, token: string, score: number }[]>([]);
 
     // getReady placeholder
     const [showGetReady, setShowGetReady] = useState<boolean>(false);
@@ -129,9 +143,16 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                 }, message.value * 1000);
                 break;
 
-            case 'guessed':
+            case 'guess_scores':
                 // Update guesses
-                // TODO implement
+                console.log('guess scores:', message.value);
+                setGuessScores(message.value
+                    .map((score: GuessScoreDTO) => ({
+                        name: score.name,
+                        token: score.token,
+                        score: score.score
+                    })));
+                setShowGetReady(false);
                 break;
         }
     }, [currentUser]);
@@ -225,7 +246,7 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
         }
     };
 
-    const submitGuesses = async (gapId: number, guesses: { gapId: number, userId: string }[]) => {
+    const submitGuesses = async (guesses: { gapId: number, userId: string }[]) => {
         if (!currentUser) return;
 
         const guessesDTO = guesses.map(guess => ({
@@ -233,7 +254,13 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
             token: guess.userId
         }));
 
-        await api.submitGuesses(initialGameId, gapId, currentUser.token, guessesDTO);
+        await api.submitGuesses(initialGameId, currentUser.token, guessesDTO).then(
+            () => {
+                setView('ranking');
+                // TODO set spinner text
+                setShowGetReady(true);
+            }
+        );
     };
 
     // recover user from session storage
@@ -245,34 +272,44 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
             if (response.success) {
                 setCurrentUser(currentUser);
-                // response is RejoinResponseDTO
-                setGameState(prev => ({
-                    ...prev,
-                    users: response.users
-                        .map((user: User) => userDTOconvert(user)),
-                    textSections: response.current_gap_text
-                        .map((section: RejoinPreGapTextDTO) => section.text),
-                    gaps: response.current_gap_text
-                        .filter((section: RejoinPreGapTextDTO) => section.gap_after)
-                        .map((section: RejoinPreGapTextDTO) => ({
-                            id: section.id,
-                            text: section.text,
-                            claimed: section.claimed,
-                            filled: section.filled,
-                            filledLocally: section.filled_by_current_user,
-                            value: section.gap_value || '',
-                        })),
-                    view: response.view
-                }))
-                response.current_gap_text
-                    .filter((section: RejoinPreGapTextDTO) => section.filled_by_current_user)
-                    .forEach((section: RejoinPreGapTextDTO) => {
-                        setClaimedGap(section.id);
-                    });
-                // join websocket
-                setJoinCom(true);
-                setView(response.view);
-                return currentUser;
+                if (response.view === 'ranking') {
+                    setView('ranking');
+                    setGuessScores(response.value.map((score: GuessScoreDTO) => ({
+                        name: score.name,
+                        token: score.token,
+                        score: score.score
+                    })));
+                    return currentUser;
+                } else {
+                    // response is RejoinResponseDTO
+                    setGameState(prev => ({
+                        ...prev,
+                        users: response.users
+                            .map((user: User) => userDTOconvert(user)),
+                        textSections: response.current_gap_text
+                            .map((section: RejoinPreGapTextDTO) => section.text),
+                        gaps: response.current_gap_text
+                            .filter((section: RejoinPreGapTextDTO) => section.gap_after)
+                            .map((section: RejoinPreGapTextDTO) => ({
+                                id: section.id,
+                                text: section.text,
+                                claimed: section.claimed,
+                                filled: section.filled,
+                                filledLocally: section.filled_by_current_user,
+                                value: section.gap_value || '',
+                            })),
+                        view: response.view
+                    }))
+                    response.current_gap_text
+                        .filter((section: RejoinPreGapTextDTO) => section.filled_by_current_user)
+                        .forEach((section: RejoinPreGapTextDTO) => {
+                            setClaimedGap(section.id);
+                        });
+                    // join websocket
+                    setJoinCom(true);
+                    setView(response.view);
+                    return currentUser;
+                }
             } else {
                 console.log('failed to recover user');
                 return null;
@@ -299,6 +336,8 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                 claimGap,
                 fillGap,
                 submitGuesses,
+                guessScores,
+                setGuessScores,
                 showGetReady
             }}
         >

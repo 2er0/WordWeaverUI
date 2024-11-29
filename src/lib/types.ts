@@ -35,6 +35,12 @@ export interface GuessesDTO {
     guesses: GuessDTO[];
 }
 
+export interface GuessScoreDTO {
+    name: string;
+    token: string;
+    score: number;
+}
+
 export interface UserDTO {
     name: string;
     token: string;
@@ -108,11 +114,8 @@ export interface WebSocketStartGuessingMessage {
 }
 
 export interface WebSocketGuessedMessage {
-    obj: 'guessed';
-    token: string;
-    gap_id: number;
-    guessed_token: string;
-    correct: boolean;
+    obj: 'guess_scores';
+    value: GuessScoreDTO[]
 }
 
 export type WebSocketMessage =

@@ -43,6 +43,6 @@ export const api = {
     filledGaps: (gameId: string, token: string) =>
         axios.get(`${API_BASE}/${gameId}/filled?token=${token}`).then(res => res.data),
 
-    submitGuesses: (gameId: string, gapId: number, token: string, guesses: { gap_id: number, token: string }[]) =>
-        axios.post(`${API_BASE}/${gameId}/guess`, {gap_id: gapId, token, guesses}).then(res => res.data),
+    submitGuesses: (gameId: string, token: string, guesses: { gap_id: number, token: string }[]) =>
+        axios.post(`${API_BASE}/${gameId}/guess`, {token, guesses}).then(res => res.data),
 };
