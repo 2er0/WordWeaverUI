@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {useGame} from "@/components/providers/GameProvider.tsx";
 import {GuessBlock} from "@/components/GuessBlock.tsx";
 

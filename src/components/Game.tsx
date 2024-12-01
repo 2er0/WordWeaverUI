@@ -7,21 +7,21 @@ import {WaitingView} from './WaitingView';
 import {FillView} from './FillView';
 import {GuessView} from './GuessView';
 import {RankingView} from './RankingView';
-import {GetReadyView} from "@/components/GetReadyView.tsx";
+import {SpinnerView} from "./SpinnerView";
 
 export function Game() {
-    const {view, setView, showGetReady} = useGame();
+    const {view, setView} = useGame();
 
     return (
         <div className="min-h-screen bg-gray-50 pb-24">
-            {showGetReady &&  <GetReadyView/>}
+            <SpinnerView/>
             {view === 'none' && <UserSelect onViewChange={setView}/>}
             {view === 'waiting' && <WaitingView/>}
             {view === 'fill' && <FillView/>}
             {view === 'guess' && <GuessView/>}
             {view === 'ranking' && <RankingView/>}
 
-            <Navigation currentView={view} onViewChange={setView}/>
+            <Navigation currentView={view}/>
         </div>
     );
 }

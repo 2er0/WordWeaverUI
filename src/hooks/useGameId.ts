@@ -10,6 +10,9 @@ export function useGameId(): string | null {
         // Get game ID from URL path
         const pathSegments = window.location.pathname.split('/');
         const id = pathSegments[1]; // Assuming URL structure is /:gameId/*
+        if (!id) {
+            return;
+        }
 
         api.helloGame(id).then( data=> {
             console.log(data)

@@ -12,7 +12,6 @@ import {
 } from '@/lib/types';
 import {api} from '@/lib/api';
 import {useWebSocket} from '@/hooks/useWebSocket';
-import {hasOwnProperty} from "tailwindcss";
 
 interface GameContextType {
     gameState: GameState;
@@ -27,7 +26,8 @@ interface GameContextType {
     submitGuesses: (guesses: { gapId: number, userId: string }[]) => Promise<void>;
     guessScores: { name: string, token: string, score: number }[];
     setGuessScores: (scores: { name: string, token: string, score: number }[]) => void;
-    showGetReady: boolean;
+    showSpinnerType: 'none' | 'getready' | 'guess' | 'waiting_for_scores' | 'ranking';
+    showSpinnerCountDown: number;
 }
 
 const GameContext = createContext<GameContextType | null>(null);
@@ -58,7 +58,8 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
     const [guessScores, setGuessScores] = useState<{ name: string, token: string, score: number }[]>([]);
 
     // getReady placeholder
-    const [showGetReady, setShowGetReady] = useState<boolean>(false);
+    const [showSpinnerType, setShowSpinnerType] = useState<'none' | 'getready' | 'guess' | 'waiting_for_scores' | 'ranking'>('none');
+    const [showSpinnerCountDown, setShowSpinnerCountDown] = useState<number>(0);
 
     const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
         console.log('WS message:', message);
@@ -77,7 +78,18 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                 break;
 
             case 'change_view':
-                setView(message.value);
+                if (message.value === 'fill') {
+                    // Update view to fill
+                    setShowSpinnerCountDown(10);
+                    setShowSpinnerType('getready');
+                    setTimeout(() => {
+                        setView('fill');
+                        setShowSpinnerType('none');
+                        setShowSpinnerCountDown(0);
+                    }, 10000);
+                } else {
+                    setView(message.value);
+                }
                 break;
 
             case 'gap_claimed':
@@ -116,9 +128,8 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
             case 'start_guessing':
                 // Update view to guess
-                // TODO set spinner text
-                // TODO change to spinner
-                setShowGetReady(true);
+                setShowSpinnerCountDown(5);
+                setShowSpinnerType('guess');
                 // load data for guess view from backend
                 api.filledGaps(initialGameId, currentUser?.token || '').then(response => {
                     console.log('filled gaps:', response);
@@ -138,26 +149,34 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                     }));
                 });
                 setTimeout(() => {
-                    setShowGetReady(false);
-                    setView('guess')
-                }, message.value * 1000);
+                    setView('guess');
+                    setShowSpinnerType('none');
+                    setShowSpinnerCountDown(0);
+                }, 5000);
                 break;
 
             case 'guess_scores':
                 // Update guesses
                 console.log('guess scores:', message.value);
+                setShowSpinnerCountDown(5);
+                setShowSpinnerType('ranking');
                 setGuessScores(message.value
                     .map((score: GuessScoreDTO) => ({
                         name: score.name,
                         token: score.token,
                         score: score.score
                     })));
-                setShowGetReady(false);
+                setTimeout(() => {
+                    setView('ranking');
+                    setShowSpinnerType('none');
+                    setShowSpinnerCountDown(0);
+                }, 5000);
                 break;
         }
     }, [currentUser]);
 
     const [joinCom, setJoinCom] = useState(false);
+    // @ts-ignore
     const {sendMessage} = useWebSocket(
         joinCom,
         initialGameId,
@@ -256,9 +275,11 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
         await api.submitGuesses(initialGameId, currentUser.token, guessesDTO).then(
             () => {
-                setView('ranking');
-                // TODO set spinner text
-                setShowGetReady(true);
+                if (showSpinnerType === 'none') {
+                    // TODO don't show waiting for score if this is the last guess
+                    setShowSpinnerCountDown(0);
+                    setShowSpinnerType('waiting_for_scores');
+                }
             }
         );
     };
@@ -338,7 +359,8 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                 submitGuesses,
                 guessScores,
                 setGuessScores,
-                showGetReady
+                showSpinnerType,
+                showSpinnerCountDown
             }}
         >
             {children}

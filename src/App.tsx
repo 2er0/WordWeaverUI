@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import {useGameId} from './hooks/useGameId';
 import {GameProvider} from './components/providers/GameProvider';
 import {Game} from './components/Game';

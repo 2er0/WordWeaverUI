@@ -1,11 +1,11 @@
 'use client';
 
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Gap, User} from "@/lib/types.ts";
-import {CheckCircle2, XCircle} from "lucide-react";
+import {CheckCircle2} from "lucide-react";
 
 interface GuessBlockProps {
-    currentUser: User;
+    currentUser: User | null;
     gap: Gap;
     users: User[];
     onGuess: (gapId: number, userId: string) => void;
@@ -41,7 +41,7 @@ export function GuessBlock({currentUser, gap, users, onGuess}: GuessBlockProps) 
                     <p className="text-sm text-gray-600">Who wrote this part?</p>
                     <div className="grid gap-2">
                         {users
-                            .filter((u) => u.id !== currentUser.id)
+                            .filter((u) => u.id !== currentUser?.id)
                             .map((user) => (
                                 <button
                                     key={user.id}

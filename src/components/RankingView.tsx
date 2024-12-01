@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { Trophy, Award, Medal } from 'lucide-react';
 import {useGame} from "@/components/providers/GameProvider.tsx";
 

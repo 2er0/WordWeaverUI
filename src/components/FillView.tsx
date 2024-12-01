@@ -9,9 +9,13 @@ export function FillView() {
 
     const verifyGapClaim = async (gapId: number) => {
         // open prompt to verify that the user wants to claim the gap
-        const confirmed = window.confirm('Are you sure you want to claim this gap?');
-        if (confirmed) {
-            await handleGapClaim(gapId);
+        if (claimedGap != null) {
+            window.alert('You have already claimed a gap!');
+        } else {
+            const confirmed = window.confirm('Are you sure you want to claim this gap?');
+            if (confirmed) {
+                await handleGapClaim(gapId);
+            }
         }
     }
 

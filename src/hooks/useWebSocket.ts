@@ -1,10 +1,5 @@
 import {useEffect, useRef, useCallback} from 'react';
-
-interface WebSocketMessage {
-    obj: 'auth' | 'user_joined' | 'change_view' |
-        'gap_claimed' | 'gap_filled' | 'guessed' | 'state_update';
-    payload?: any;
-}
+import {WebSocketMessage} from "@/lib/types.ts";
 
 export function useWebSocket(
     joinGame: boolean,
