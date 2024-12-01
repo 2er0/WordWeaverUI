@@ -27,7 +27,7 @@ export function UserSelect({onViewChange}: NavigationProps) {
             onViewChange('waiting');
         } catch (err) {
             console.log(err);
-            setError('Failed to join the game. Please try again.');
+            setError('Failed to join the game.');
         }
     };
 

@@ -3,8 +3,13 @@
 import axios from 'axios';
 import {GameDTO} from './types';
 
-//const API_BASE = 'http://localhost:3000/api';
-const API_BASE = '/api';
+let API_BASE = '';
+if (process.env.NODE_ENV === 'development') {
+    API_BASE = 'http://localhost:3000/api';
+} else {
+    API_BASE = '/api';
+}
+// const API_BASE = process.env.HOST_BASE_URL;
 
 export const api = {
     // Admin endpoints

@@ -1,6 +1,7 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
+import {Send} from 'lucide-react'
 import {useGame} from "@/components/providers/GameProvider.tsx";
 
 export function FillView() {
@@ -90,6 +91,7 @@ export function FillView() {
                             className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
                         >
                             Fill
+                            <Send className="inline-block w-6 h-6 ml-2"/>
                         </button>
                     </div>
                 </div>

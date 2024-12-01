@@ -275,6 +275,7 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
         await api.submitGuesses(initialGameId, currentUser.token, guessesDTO).then(
             () => {
+                console.log('showSpinnerType', showSpinnerType);
                 if (showSpinnerType === 'none') {
                     // TODO don't show waiting for score if this is the last guess
                     setShowSpinnerCountDown(0);

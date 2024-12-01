@@ -62,8 +62,8 @@ export function SpinnerView() {
                 <ul className="pulsing-list">
                     <li className="m-1">...</li>
                     <li className="m-1">......</li>
-                    <li className="m-1">Waiting for other to finish their guesses ...</li>
                     <li className="m-1">Puhhh ......</li>
+                    <li className="m-1">Waiting for other to finish their guesses ...</li>
                 </ul>
             );
         } else if (showSpinnerType === 'ranking') {
