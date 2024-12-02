@@ -191,7 +191,13 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
     });
 
     const joinGame = async (name: string) => {
-        const token = crypto.randomUUID();
+        let token = '';
+        try {
+            token = crypto.randomUUID();
+        } catch (e) {
+            console.log('Failed to generate random UUID:', e);
+            token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
         const response = await api.joinGame(initialGameId, name, token);
 
         if (response.success) {
