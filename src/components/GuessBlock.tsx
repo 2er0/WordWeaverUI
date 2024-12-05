@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 import {Gap, User} from "@/lib/types.ts";
-import {CheckCircle2} from "lucide-react";
+import {BadgeInfo, MousePointerSquare} from "lucide-react";
 
 interface GuessBlockProps {
     gap: Gap;
@@ -26,10 +26,11 @@ export function GuessBlock({gap, users, onGuess}: GuessBlockProps) {
         <span>
             <span key={gap.id} className="bg-gray-200 rounded ml-1 mr-1 p-1" onClick={() => setShowOptions(true)}>
                 <span>
-                    {gap.value}{guess && (<span className="text-green-500 ml-1">
+                    {gap.value}{guess ? (<span className="text-blue-500 ml-1">
                         {' '}{name}
-                        <CheckCircle2 className="h-4 w-4 ml-1 inline-block align-text-top"/>
+                        <BadgeInfo className="h-4 w-4 ml-1 inline-block align-text-top"/>
                     </span>
+                ) : (<span className={'text-red-400 ml-1'}><MousePointerSquare className="h-4 w-4 ml-1 inline-block align-text-top" /></span>
                 )}
                 </span>
             </span>

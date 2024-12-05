@@ -26,7 +26,9 @@ export function FillView() {
 
     const handleFill = async () => {
         if (claimedGap != null && input.trim()) {
-            await fillGap(claimedGap, input.trim());
+            // reduce input length to 140 characters
+            const shortInput = input.substring(0, 140);
+            await fillGap(claimedGap, shortInput.trim());
         }
     };
 
@@ -79,13 +81,23 @@ export function FillView() {
             {claimedGap != null && (
                 <div className="fixed bottom-20 left-0 right-0 p-4 bg-white border-t border-gray-200">
                     <div className="max-w-md mx-auto flex gap-2">
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Enter your word or phrase..."
-                        />
+                        <div className="relative flex-1">
+                            <input
+                                id="gapFill"
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                className="w-full px-4 py-2 pr-16 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Enter your word or phrase..."
+                                autoFocus={true}
+                                maxLength={140}
+                            />
+                            <span
+                                className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-sm 
+                                ${input.length > 120 ? 'text-red-500' : 'text-gray-500'}`}>
+                                {input.length}/140
+                        </span>
+                        </div>
                         <button
                             onClick={handleFill}
                             className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"

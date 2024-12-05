@@ -210,7 +210,7 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
             setCurrentUser(newUser);
             // save to session storage
-            sessionStorage.setItem(initialGameId + '_user', JSON.stringify(newUser));
+            localStorage.setItem(initialGameId + '_user', JSON.stringify(newUser));
 
             console.log(response.pre_gaps_text);
             setGameState(prev => ({
@@ -293,7 +293,7 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
     // recover user from session storage
     const recoverUser = async () => {
-        const userString = sessionStorage.getItem(initialGameId + '_user');
+        const userString = localStorage.getItem(initialGameId + '_user');
         if (userString) {
             const currentUser = JSON.parse(userString);
             const response = await api.rejoinGame(initialGameId, currentUser?.name, currentUser?.token);

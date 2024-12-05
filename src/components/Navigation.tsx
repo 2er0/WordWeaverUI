@@ -49,7 +49,7 @@ export function Navigation({currentView}: NavigationProps) {
                 <div className={`flex flex-col items-center text-gray-500 cursor-pointer`}
                      onClick={() => setShowInfo(true)}>
                     <Info className={`h-6 w-6`}/>
-                    <span className="text-sm">About</span>
+                    <span className="text-sm">Help / About</span>
                 </div>
                 {showInfo && <div>
                     <div className="fixed top-0 left-0 right-0 bottom-0 bg-gray-900 bg-opacity-50 z-50"/>
