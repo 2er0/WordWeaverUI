@@ -16,7 +16,6 @@ export function GuessBlock({gap, users, onGuess}: GuessBlockProps) {
     const [showOptions, setShowOptions] = useState(false);
 
     const handleGuessSelect = (gapId: number, userId: string, name: string) => {
-        console.log('handleGuessSelect', gapId, userId);
         setGuess(userId);
         setName(name);
         onGuess(gapId, userId);
@@ -45,7 +44,6 @@ export function GuessBlock({gap, users, onGuess}: GuessBlockProps) {
                         <p className="mb-4 text-sm text-gray-600">
                             <button className="bg-gray-200 p-2 rounded"
                                     onClick={() => {
-                                        console.log('Back');
                                         setShowOptions(false)
                                     }
                                     }>Back

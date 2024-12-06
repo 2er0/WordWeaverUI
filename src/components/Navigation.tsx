@@ -10,7 +10,6 @@ interface NavigationProps {
 }
 
 export function Navigation({currentView}: NavigationProps) {
-    console.log('currentView:', currentView);
     const [showInfo, setShowInfo] = useState(false);
     return (
         <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">

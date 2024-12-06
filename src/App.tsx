@@ -4,12 +4,15 @@ import {useGameId} from './hooks/useGameId';
 import {GameProvider} from './components/providers/GameProvider';
 import {Game} from './components/Game';
 import {NoGame} from './components/NoGame';
+import {useState} from "react";
+import {BrowserRouter, Routes, Route} from "react-router";
 
 function App() {
-    const gameId = useGameId();
+    const [updatedGameId, setUpdatedGameId] = useState<string | null>(null);
+    const gameId = useGameId({updatedGameId});
 
     if (!gameId) {
-        return <NoGame/>;
+        return <NoGame updateGameId={setUpdatedGameId} />;
     }
 
     return (
@@ -19,4 +22,15 @@ function App() {
     );
 }
 
-export default App;
+
+function RouterApp() {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<App />} />
+            </Routes>
+        </BrowserRouter>
+    )
+}
+
+export default RouterApp;

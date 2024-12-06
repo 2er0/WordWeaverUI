@@ -62,7 +62,6 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
     const [showSpinnerCountDown, setShowSpinnerCountDown] = useState<number>(0);
 
     const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
-        console.log('WS message:', message);
         switch (message.obj) {
             case 'user_joined':
                 // Add new user to the game state
@@ -132,7 +131,6 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
                 setShowSpinnerType('guess');
                 // load data for guess view from backend
                 api.filledGaps(initialGameId, currentUser?.token || '').then(response => {
-                    console.log('filled gaps:', response);
                     setGameState(prev => ({
                         ...prev,
                         gaps: prev.gaps.map(gap => {
@@ -157,7 +155,6 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
             case 'guess_scores':
                 // Update guesses
-                console.log('guess scores:', message.value);
                 setShowSpinnerCountDown(5);
                 setShowSpinnerType('ranking');
                 setGuessScores(message.value
@@ -212,7 +209,6 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
             // save to session storage
             localStorage.setItem(initialGameId + '_user', JSON.stringify(newUser));
 
-            console.log(response.pre_gaps_text);
             setGameState(prev => ({
                 ...prev,
                 users: [...prev.users, newUser, ...response.current_users
@@ -281,9 +277,7 @@ export function GameProvider({children, initialGameId}: GameProviderProps) {
 
         await api.submitGuesses(initialGameId, currentUser.token, guessesDTO).then(
             () => {
-                console.log('showSpinnerType', showSpinnerType);
                 if (showSpinnerType === 'none') {
-                    // TODO don't show waiting for score if this is the last guess
                     setShowSpinnerCountDown(0);
                     setShowSpinnerType('waiting_for_scores');
                 }

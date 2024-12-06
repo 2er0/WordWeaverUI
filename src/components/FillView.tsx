@@ -34,7 +34,6 @@ export function FillView() {
 
     useEffect(() => {
         if (gameState.gaps != undefined && claimedGap != null) {
-            console.log('claimedGap:', claimedGap);
             setInput(gameState.gaps[claimedGap].value || '');
         }
     }, []);

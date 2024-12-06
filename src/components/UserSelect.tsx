@@ -42,7 +42,7 @@ export function UserSelect({onViewChange}: NavigationProps) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <h2 className="text-2xl font-bold text-center">Join Word Weaver</h2>
+                    <h2 className="text-2xl font-bold text-center">Join Blank against DART</h2>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">

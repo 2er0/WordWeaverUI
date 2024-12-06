@@ -9,12 +9,10 @@ export function GuessView() {
     const [guesses, setGuesses] = useState<Record<number, string>>([]);
 
     const handleGuess = (gapId: number, userId: string) => {
-        console.log('handleGuess', gapId, userId);
         setGuesses({...guesses, [gapId]: userId});
     };
 
     const handleGuessSubmit = () => {
-        console.log('Submit Guess', guesses);
         const guessArray = Object.entries(guesses)
             .map(([gapId, userId]) => ({gapId: parseInt(gapId), userId}));
         submitGuesses(guessArray);
@@ -26,7 +24,7 @@ export function GuessView() {
 
             <div className="space-y-6">
                 {gameState.gaps.filter(gap => gap.value).map((gap) => {
-                    return (<span>
+                    return (<span key={gap.id + "-span"}>
                        {gap.text}
                         <GuessBlock key={gap.id}
                                     gap={gap}

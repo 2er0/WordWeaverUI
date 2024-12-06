@@ -1,8 +1,24 @@
 'use client';
 
 import {AlertCircle} from 'lucide-react';
+import {useState} from "react";
 
-export function NoGame() {
+interface NoGameProps {
+    updateGameId: (gameId: string) => void;
+}
+
+export function NoGame({updateGameId}: NoGameProps) {
+    const [input, setInput] = useState('');
+
+    const handleSubmit = () => {
+        if (input) {
+            const gameId = input;
+            if (gameId) {
+                updateGameId(gameId);
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
@@ -21,18 +37,19 @@ export function NoGame() {
                         type="text"
                         placeholder="Enter game ID"
                         className="border rounded px-3 py-2 w-full"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                window.location.href = `/${(e.target as HTMLInputElement).value}`;
+                                handleSubmit();
                             }
                         }}
                     />
                     <button
                         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
                         onClick={() => {
-                            const input = document.querySelector('input[type="text"]') as HTMLInputElement;
                             if (input) {
-                                window.location.href = `/${input.value}`;
+                                handleSubmit();
                             }
                         }}
                     >

@@ -7,16 +7,14 @@ import './SpinnerView.css';
 export function SpinnerView() {
     const {showSpinnerType, showSpinnerCountDown} = useGame();
     // for debugging
-    // const showSpinnerType = 'ranking';
+    // const showSpinnerType = 'guess';
     // const showSpinnerCountDown = 10;
 
     const [countdown, setCountdown] = useState<number>(showSpinnerCountDown);
 
     useEffect(() => {
         setCountdown(showSpinnerCountDown);
-        console.log('countdown:', countdown);
         const interval = setInterval(() => {
-            console.log('countdown:', countdown);
             setCountdown(prevCountdown => {
                 if (prevCountdown <= 1) {
                     clearInterval(interval);
@@ -81,11 +79,11 @@ export function SpinnerView() {
             <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center w-full h-full">
                 <div className="bg-white p-8 rounded-lg w-full h-full ml-6 mt-6 mr-6">
                     <h2 className="text-2xl font-bold text-center">{titleText}</h2>
-                    <p className="h-36 flex items-center justify-center">
+                    <div className="h-36 flex items-center justify-center">
                         <div className="loader text-center">
                             <p className="flex items-center justify-center h-36" id="countdown"><strong>{countdown > 0 ? countdown : ''}</strong></p>
                         </div>
-                    </p>
+                    </div>
                     <div className="text-center mt-4">{additionalText}</div>
                 </div>
             </div>
