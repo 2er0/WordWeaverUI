@@ -27,11 +27,8 @@ export function NoGame({updateGameId}: NoGameProps) {
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">No Game Set</h1>
                 <p className="text-gray-600 mb-6">
-                    Please make sure you have the correct game URL or contact the game administrator.
+                    Please make sure you have the correct game ID or contact the game administrator.
                 </p>
-                <div className="text-sm text-gray-500">
-                    Expected URL format: <code className="bg-gray-100 px-2 py-1 rounded">/:gameId</code>
-                </div>
                 <div className="mt-6">
                     <input
                         type="text"
