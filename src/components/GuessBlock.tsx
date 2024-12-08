@@ -40,7 +40,7 @@ export function GuessBlock({gap, users, onGuess}: GuessBlockProps) {
                              setShowOptions(false);
                          }
                      }}>
-                    <div className="max-h-screen w-3/6 bg-white p-5 rounded">
+                    <div className="max-h-screen w-5/6 bg-white p-5 rounded">
                         <p className="mb-4 text-sm text-gray-600">
                             <button className="bg-gray-200 p-2 rounded"
                                     onClick={() => {
@@ -51,7 +51,7 @@ export function GuessBlock({gap, users, onGuess}: GuessBlockProps) {
                             {' '}
                             Who wrote this part?
                         </p>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             {users
                                 .map((user) => (
                                     <button
